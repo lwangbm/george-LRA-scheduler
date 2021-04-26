@@ -358,11 +358,13 @@ FPO is implemented based on Metis ([GitHub Repo](https://github.com/lwangbm/Meti
 ## Our Method: PPPO
 PPPO is implemented in Python with TensorFlow on our own. 
 
-    
+1. Run PPPO of Small size:
+
+    ```
     $ cd Experiments/shell
     $ # Small size
     $ ./shell/RunPPPO.sh
-    
+    ```
     Output: the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store 
     in the folder:
     ```
