@@ -34,6 +34,7 @@ Our project includes three parts:
 1. [Cluster](https://github.com/georgescheduler/george-LRA-scheduler/tree/master/Cluster): Implementation of our seven real-world LRAs that exhibit inter-container interferences.
 2. [Experiments](https://github.com/georgescheduler/george-LRA-scheduler/tree/master/Experiments): George scheduling workflow based on our real-world LRA setting.
 
+
 # Experiment workflow
 
 ## Real-World LRA cluster setup and profiler establishment
@@ -129,6 +130,23 @@ Our project includes three parts:
     ```bash
     (manager)$ docker swarm leave --force
     ```
+
+## Operation Constraints
+Operation constraints are set by the operators in real-world LRA to guarantee the safety and stability of the cluster. As stated in our manuscript, we consider two kinds of constraints in our cluster, namely soft constraints and hard constraints.
+
+### Soft constraints
+Soft constraints should be guaranteed within a pre-defined violation threshold (e.g., 5%). We consider the following soft constraints in our setting.
+* Incremental deployment: The containers of the ISR application should be placed on a specific machine subset for the new-version deployment. The machine subset consists of 50% of the machine in the cluster.
+
+* Hardware affinity: To mimic the hardware requirement, we assume one LRA, CKM requires a particular kernel version and can only be deployed on a machine subset with 30% of the machines.
+
+
+### Hard constraints
+Hard constraints should be strictly enforced in the cluster and cannot be violated.
+
+* Node Capacity: The number of containers placed on each hosting machine should not exceed the node capacity, which is 8 in our experiment.
+
+* Deployment Spreading: For each LRA, it can launch at most one container on a physical machine for load-balance.
 
 ## George: RL model training for the real-world LRA cluster
 
@@ -263,11 +281,10 @@ Medea is implemented using Matlab, due to its outstanding performance in solving
     ```
     Output: the scheduling decision log files including the allocation matrix, constraint violations, time duration .etc will be store in the folder.
 
-## Baseline Method: CPO
 
-## Baseline Method: CPO
+## Baseline Method: Paragon
 
-CPO is re-implemented in Python. For the sake of fair comparison, we feed it with the full interference matrix information as Medea.
+Paragon is re-implemented in Python. For the sake of fair comparison, we feed it with the full interference matrix information as Medea.
 
 1. Make sure `interference_applist.csv` has been generated in former Medea setup:
 
@@ -301,6 +318,59 @@ CPO is re-implemented in Python. For the sake of fair comparison, we feed it wit
     $ cd Experiments
     $ python3 ParagonExp.py --batch_set_size 200 --batch_choice 0 --size medium --verbose
     ```
+    
+## Baseline Method: CPO
+CPO is implemented based on thier [GitHub Repo](https://github.com/jachiam/cpo). 
+
+1. Run CPO of Small size:
+
+    ```
+    $ cd Experiments/shell
+    $ # Small size
+    $ ./shell/RunCPO.sh
+    ```
+    
+    Output:  the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store in the folder:
+    ```
+    $ cd Experiments
+    $  ls ./checkpoint/
+    CPO_27_*_*/
+    ```
+
+## Baseline Method: FPO
+FPO is implemented based on Metis ([GitHub Repo](https://github.com/lwangbm/Metis)) and the Fixed Penalty Optimization proposed in the CPO. 
+
+1. Run FPO of Small size:
+
+    ```
+    $ cd Experiments/shell
+    $ # Small size
+    $ ./shell/RunFPO.sh
+    ```
+    Output: the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store in
+    the folder:
+    ```
+    $ cd Experiments
+    $  ls ./checkpoint/
+    FPO_27_*_*/
+    ```
+        
+## Our Method: PPPO
+PPPO is implemented in Python with TensorFlow on our own. 
+
+    
+    $ cd Experiments/shell
+    $ # Small size
+    $ ./shell/RunPPPO.sh
+    
+    Output: the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store 
+    in the folder:
+    ```
+    $ cd Experiments
+    $  ls ./checkpoint/
+    PPPO_27_*_*/
+    ```
+
 
 # References
 
@@ -308,12 +378,14 @@ CPO is re-implemented in Python. For the sake of fair comparison, we feed it wit
 
 [2] Paragon: Christina Delimitrou and Christos Kozyrakis. 2013. Paragon: QoS-aware scheduling for heterogeneous datacenters. In Proceedings of the eighteenth international conference on Architectural support for programming languages and operating systems (ASPLOS ’13). Association for Computing Machinery, New York, NY, USA, 77–88. DOI:https://doi.org/10.1145/2451116.2451125
 
-[3] Redis: an open source, in-memory data structure store. https://redis.io
+[3] CPO: Joshua Achiam, David Held, Aviv Tamar, and Pieter Abbeel. 2017. [Constrained Policy Optimization](https://arxiv.org/abs/1705.10528). In Proceedings of the 34th International Conference on Machine Learning (ICML), 2017.
 
-[4] Model Server for Apache MXNet. https://github.com/awslabs/mxnet-model-server
+[4] Redis: an open source, in-memory data structure store. https://redis.io
 
-[5] Image Super Resolution. https://github.com/idealo/image-super-resolution
+[5] Model Server for Apache MXNet. https://github.com/awslabs/mxnet-model-server
 
-[6] Locust: an open source load testing tool. https://locust.io
+[6] Image Super Resolution. https://github.com/idealo/image-super-resolution
 
-[7] Yahoo! Cloud Streaming Benchmark: Brian F. Cooper, Adam Silberstein, Erwin Tam, Raghu Ramakrishnan, and Russell Sears. 2010. Benchmarking cloud serving systems with YCSB. In Proceedings of the 1st ACM symposium on Cloud computing (SoCC ’10). Association for Computing Machinery, New York, NY, USA, 143–154. DOI:https://doi.org/10.1145/1807128.1807152
+[7] Locust: an open source load testing tool. https://locust.io
+
+[8] Yahoo! Cloud Streaming Benchmark: Brian F. Cooper, Adam Silberstein, Erwin Tam, Raghu Ramakrishnan, and Russell Sears. 2010. Benchmarking cloud serving systems with YCSB. In Proceedings of the 1st ACM symposium on Cloud computing (SoCC ’10). Association for Computing Machinery, New York, NY, USA, 143–154. DOI:https://doi.org/10.1145/1807128.1807152
