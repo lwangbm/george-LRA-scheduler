@@ -319,27 +319,9 @@ Paragon is re-implemented in Python. For the sake of fair comparison, we feed it
     $ cd Experiments
     $ python3 ParagonExp.py --batch_set_size 200 --batch_choice 0 --size medium --verbose
     ```
-    
-## Baseline Method: CPO
-CPO is implemented based on thier [GitHub Repo](https://github.com/jachiam/cpo). 
-
-1. Run CPO of Small size:
-
-    ```
-    $ cd Experiments/shell
-    $ # Small size
-    $ ./shell/RunCPO.sh
-    ```
-    
-    Output:  the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store in the folder:
-    ```
-    $ cd Experiments
-    $  ls ./checkpoint/
-    CPO_27_*_*/
-    ```
 
 ## Baseline Method: FPO
-FPO is implemented based on Metis ([GitHub Repo](https://github.com/lwangbm/Metis)) and the Fixed Penalty Optimization proposed in the CPO. 
+FPO is implemented based on Metis ([GitHub Repo](https://github.com/lwangbm/Metis)) and the Fixed Penalty Optimization proposed in the CPO paper. 
 
 1. Run FPO of Small size:
 
@@ -355,9 +337,45 @@ FPO is implemented based on Metis ([GitHub Repo](https://github.com/lwangbm/Meti
     $  ls ./checkpoint/
     FPO_27_*_*/
     ```
-        
+
+## Baseline Method: CPO
+CPO is implemented based on thier [GitHub Repo](https://github.com/jachiam/cpo). In order to achieve fast training with Ray, we package the CPO source code in the **testbedlib** module.
+
+0. Install the **testbedlib** module with the following command.
+
+    ```
+    $ cd Experiments
+    $ pip install ./dist/testbedlib-0.1.0-py3-none-any.whl
+    ```
+    
+    It is much more convenient to install it in your Python virtual environment or conda environment. 
+    
+1. Run CPO of Small size:
+
+    ```
+    $ cd Experiments/shell
+    $ # Small size
+    $ ./shell/RunCPO.sh
+    ```
+    
+    Output:  the training log files including the RPS, constraint violations, placement matrix, training time duration, etc. will be store in the folder:
+    ```
+    $ cd Experiments
+    $  ls ./checkpoint/
+    CPO_27_*_*/
+    ```
+     
 ## Our Method: PPPO
-PPPO is implemented in Python with TensorFlow on our own. 
+PPPO is implemented in Python with TensorFlow on our own. In order to achieve fast training with Ray, we package the PPPO source code in the **testbedlib** module.
+
+0. Install the **testbedlib** module with the following command.
+
+    ```
+    $ cd Experiments
+    $ pip install ./dist/testbedlib-0.1.0-py3-none-any.whl
+    ```
+    
+    It is much more convenient to install it in your Python virtual environment or conda environment. 
 
 1. Run PPPO of Small size:
 
@@ -373,7 +391,6 @@ PPPO is implemented in Python with TensorFlow on our own.
     $  ls ./checkpoint/
     PPPO_27_*_*/
     ```
-
 
 # References
 
@@ -392,3 +409,5 @@ PPPO is implemented in Python with TensorFlow on our own.
 [7] Locust: an open source load testing tool. https://locust.io
 
 [8] Yahoo! Cloud Streaming Benchmark: Brian F. Cooper, Adam Silberstein, Erwin Tam, Raghu Ramakrishnan, and Russell Sears. 2010. Benchmarking cloud serving systems with YCSB. In Proceedings of the 1st ACM symposium on Cloud computing (SoCC ’10). Association for Computing Machinery, New York, NY, USA, 143–154. DOI:https://doi.org/10.1145/1807128.1807152
+
+[9] Ray: Fast and Simple Distributed Computing. [https://ray.io/](https://ray.io/)
