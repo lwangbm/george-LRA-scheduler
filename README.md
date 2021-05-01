@@ -16,7 +16,8 @@ This repository contains the tensorflow implementation for reinforcement learnin
 5. pandas
 6. matplotlib
 7. sklearn
-8. Matlab 2019b or above
+8. ray
+9. Matlab 2019b or above
 
 ## Installation
 ### Install Requirements
